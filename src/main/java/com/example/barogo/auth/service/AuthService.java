@@ -6,12 +6,14 @@ import com.example.barogo.auth.dto.SignupRequestDto;
 import com.example.barogo.auth.repository.UserRepository;
 import com.example.barogo.common.error.InvalidPasswordException;
 import com.example.barogo.common.security.JwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
 
   private final UserRepository userRepository;
