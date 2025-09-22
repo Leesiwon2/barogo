@@ -1,5 +1,6 @@
 package com.example.barogo.delivery.domain;
 
+import com.example.barogo.common.error.BadRequestException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,5 +57,13 @@ public class Delivery {
   public void addItem(DeliveryItem item) {
     items.add(item);
     item.setDelivery(this);
+  }
+
+  public void changeArrivalLocation(String newArrivalLocation) {
+    if (!(this.status == DeliveryStatus.PENDING || this.status == DeliveryStatus.ASSIGNED)) {
+      throw new BadRequestException("픽업 완료 이후에는 도착지 주소를 변경할 수 없습니다.");
+    }
+    this.arrivalLocation = newArrivalLocation;
+    this.modifiedAt = LocalDateTime.now();
   }
 }

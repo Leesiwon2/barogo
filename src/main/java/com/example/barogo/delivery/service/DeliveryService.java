@@ -6,6 +6,7 @@ import com.example.barogo.delivery.domain.DeliveryItem;
 import com.example.barogo.delivery.domain.DeliveryStatus;
 import com.example.barogo.delivery.dto.CreateDeliveryRequestDto;
 import com.example.barogo.delivery.dto.DeliveryRequestDto;
+import com.example.barogo.delivery.dto.UpdateArrivalLocationRequestDto;
 import com.example.barogo.delivery.repository.DeliveryRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -47,5 +48,14 @@ public class DeliveryService {
       throw new BadRequestException("조회 기간은 최대 3일까지만 가능합니다.");
     }
       return deliveryRepository.searchDeliveries(request);
+  }
+
+
+  @Transactional
+  public void updateArrivalLocation(UpdateArrivalLocationRequestDto request) {
+    Delivery delivery = deliveryRepository.findById(request.getDeliveryId())
+        .orElseThrow(() -> new BadRequestException("해당 배달을 찾을 수 없습니다."));
+
+    delivery.changeArrivalLocation(request.getNewArrivalLocation());
   }
 }
