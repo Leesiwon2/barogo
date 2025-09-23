@@ -4,6 +4,7 @@ import com.example.barogo.common.error.BadRequestException;
 import com.example.barogo.delivery.domain.Delivery;
 import com.example.barogo.delivery.domain.DeliveryItem;
 import com.example.barogo.delivery.domain.DeliveryStatus;
+import com.example.barogo.delivery.dto.ChangeStatusRequestDto;
 import com.example.barogo.delivery.dto.CreateDeliveryRequestDto;
 import com.example.barogo.delivery.dto.DeliveryRequestDto;
 import com.example.barogo.delivery.dto.UpdateArrivalLocationRequestDto;
@@ -57,5 +58,13 @@ public class DeliveryService {
         .orElseThrow(() -> new BadRequestException("해당 배달을 찾을 수 없습니다."));
 
     delivery.changeArrivalLocation(request.getNewArrivalLocation());
+  }
+
+  @Transactional
+  public void changeStatus(ChangeStatusRequestDto request) {
+    Delivery delivery = deliveryRepository.findById(request.getDeliveryId())
+        .orElseThrow(() -> new BadRequestException("배달 건이 존재하지 않습니다."));
+
+    delivery.changeStatus(request.getStatus());
   }
 }

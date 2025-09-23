@@ -1,6 +1,7 @@
 package com.example.barogo.delivery.controller;
 
 import com.example.barogo.delivery.domain.Delivery;
+import com.example.barogo.delivery.dto.ChangeStatusRequestDto;
 import com.example.barogo.delivery.dto.CreateDeliveryRequestDto;
 import com.example.barogo.delivery.dto.DeliveryRequestDto;
 import com.example.barogo.delivery.dto.UpdateArrivalLocationRequestDto;
@@ -43,5 +44,11 @@ public class DeliveryController {
   public ResponseEntity<String> updateArrivalLocation(@RequestBody UpdateArrivalLocationRequestDto request) {
     deliveryService.updateArrivalLocation(request);
     return ResponseEntity.ok("도착지 주소가 변경되었습니다.");
+  }
+
+  @PatchMapping("/status")
+  public ResponseEntity<String> changeStatus(@RequestBody ChangeStatusRequestDto request) {
+    deliveryService.changeStatus(request);
+    return ResponseEntity.ok("배달 상태가 변경되었습니다.");
   }
 }

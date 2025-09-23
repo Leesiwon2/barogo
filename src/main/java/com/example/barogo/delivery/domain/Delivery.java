@@ -66,4 +66,22 @@ public class Delivery {
     this.arrivalLocation = newArrivalLocation;
     this.modifiedAt = LocalDateTime.now();
   }
+
+  public void changeStatus(DeliveryStatus newStatus) {
+    if (!isValidTransition(this.status, newStatus)) {
+      throw new BadRequestException(String.format("상태 변경 불가: %s → %s", this.status, newStatus));
+    }
+    this.status = newStatus;
+    this.modifiedAt = LocalDateTime.now();
+  }
+
+  private boolean isValidTransition(DeliveryStatus current, DeliveryStatus target) {
+    return switch (current) {
+      case PENDING -> (target == DeliveryStatus.ASSIGNED || target == DeliveryStatus.CANCELLED);
+      case ASSIGNED -> (target == DeliveryStatus.PICKED_UP || target == DeliveryStatus.CANCELLED);
+      case PICKED_UP -> target == DeliveryStatus.IN_TRANSIT;
+      case IN_TRANSIT -> target == DeliveryStatus.DELIVERED;
+      default -> false;
+    };
+  }
 }
