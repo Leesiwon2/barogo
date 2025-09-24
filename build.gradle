@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.example'
@@ -57,8 +58,23 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core:10.14.0'
 	implementation 'org.flywaydb:flyway-mysql:10.14.0'
 
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-core:3.0.0'
+
 }
 
+ext {
+	snippetsDir = file("build/generated-snippets")
+}
+
+test {
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
 
 tasks.withType(JavaCompile) {
 	options.annotationProcessorGeneratedSourcesDirectory = file("$buildDir/generated/sources/annotationProcessor/java/main")
