@@ -1,9 +1,9 @@
 package com.example.barogo.delivery.controller;
 
-import com.example.barogo.delivery.domain.Delivery;
 import com.example.barogo.delivery.dto.ChangeStatusRequestDto;
 import com.example.barogo.delivery.dto.CreateDeliveryRequestDto;
 import com.example.barogo.delivery.dto.DeliveryRequestDto;
+import com.example.barogo.delivery.dto.DeliveryResponseDto;
 import com.example.barogo.delivery.dto.UpdateArrivalLocationRequestDto;
 import com.example.barogo.delivery.service.DeliveryService;
 import java.time.LocalDate;
@@ -32,12 +32,15 @@ public class DeliveryController {
   }
 
   @GetMapping
-  public List<Delivery> deliveries(
+  public List<DeliveryResponseDto> deliveries(
       @RequestParam(name = "start_date") LocalDate startDate,
       @RequestParam(name = "end_date") LocalDate endDate,
       @RequestParam(name = "user_id", required = false) String userId) {
     DeliveryRequestDto request = new DeliveryRequestDto(startDate, endDate, userId);
-    return deliveryService.deliveries(request);
+    return deliveryService.deliveries(request)
+        .stream()
+        .map(DeliveryResponseDto::fromEntity)
+        .toList();
   }
 
   @PatchMapping("/arrival-location")
