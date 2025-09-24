@@ -25,10 +25,10 @@ public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long userId;
+  private Long idx;
 
   @Column(nullable = false)
-  private String id;
+  private String loginId;
 
   @Column(nullable = false)
   private String password;
@@ -42,7 +42,7 @@ public class User implements UserDetails {
 
   @Override
   public String getUsername() {
-    return null;
+    return this.loginId;
   }
   @Override public boolean isAccountNonExpired() { return true; }
   @Override public boolean isAccountNonLocked() { return true; }

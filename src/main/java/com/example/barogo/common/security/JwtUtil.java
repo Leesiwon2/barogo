@@ -16,36 +16,33 @@ import org.springframework.stereotype.Component;
 public class JwtUtil {
 
   @Value("${jwt.secret}")
-  private String secretKey;
+  private String SECRET_KEY;
 
   @Value("${jwt.expiration}")
-  private long tokenValidityInMillis;
+  private long TOKEN_VALIDITY;
 
   private Key key;
 
   @PostConstruct
   public void init() {
-    this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
   }
 
-
-  public String createToken(String id) {
+  public String createToken(String loginId) {
     Date now = new Date();
-    Date expiry = new Date(now.getTime() + tokenValidityInMillis);
+    Date expiry = new Date(now.getTime() + TOKEN_VALIDITY);
 
     return Jwts.builder()
-        .setSubject(id)
-        .claim("id", id)
+        .setSubject(loginId) // loginId가 토큰 주체
         .setIssuedAt(now)
         .setExpiration(expiry)
-        .signWith(key, SignatureAlgorithm.HS256)
+        .signWith(key, SignatureAlgorithm.HS512)
         .compact();
   }
 
-  public String getIdFromToken(String token) {
+  public String getLoginIdFromToken(String token) {
     return parseToken(token).getBody().getSubject();
   }
-
 
   public boolean validateToken(String token) {
     try {
@@ -62,5 +59,4 @@ public class JwtUtil {
         .build()
         .parseClaimsJws(token);
   }
-
 }

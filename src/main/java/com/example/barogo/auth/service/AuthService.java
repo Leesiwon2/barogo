@@ -21,7 +21,7 @@ public class AuthService {
   private final JwtUtil jwtUtil;
 
   public void signup(SignupRequestDto request) {
-    if (userRepository.existsById(request.getId())) {
+    if (userRepository.existsByLoginId(request.getId())) {
       throw new IllegalArgumentException("이미 등록된 ID 입니다.");
     }
 
@@ -30,7 +30,7 @@ public class AuthService {
     }
 
     User user = User.builder()
-        .id(request.getId())
+        .loginId(request.getId())
         .password(passwordEncoder.encode(request.getPassword()))
         .name(request.getName())
         .build();
@@ -40,14 +40,14 @@ public class AuthService {
 
   public String login(LoginRequestDto request) {
 
-    User user = userRepository.findById(request.getId())
+    User user = userRepository.findByLoginId(request.getId())
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID입니다."));
 
 
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
       throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
     }
-    return jwtUtil.createToken(user.getId());
+    return jwtUtil.createToken(user.getLoginId());
   }
 
   private boolean isValidPassword(String password) {

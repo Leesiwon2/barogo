@@ -50,8 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     try {
       if (jwtUtil.validateToken(token)) {
-        String email = jwtUtil.getIdFromToken(token);
-        User user = userRepository.findById(email).orElse(null);
+        String loginId = jwtUtil.getLoginIdFromToken(token);
+        User user = userRepository.findByLoginId(loginId).orElse(null);
 
         if (user != null) {
           UsernamePasswordAuthenticationToken authentication =
@@ -66,7 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
       }
     } catch (JwtException e) {
-      // 유효하지 않은 토큰일 경우 인증 없이 진행
     }
 
     filterChain.doFilter(request, response);
